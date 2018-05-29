@@ -26,6 +26,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'whss.apps.WhsConfig',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
