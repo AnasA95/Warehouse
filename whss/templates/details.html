@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+    <h3 class="center-align red lighten-3">{{ user.name }}</h3>
+    <div class="card">
+        <div class="card-content">
+            {{ user.name }}
+        </div>
+        <div class="card-action">
+            {{ user.id }}
+        </div>
+    </div>
+    <a href="/whss" class="btn">Go Back</a>
+{% endblock %}

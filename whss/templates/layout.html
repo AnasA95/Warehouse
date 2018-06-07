@@ -2,10 +2,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    {% block title %}
-        <title>Warehouse</title>
-    {% endblock %}
-    <link rel="stylesheet" type="text/css" href="/whss/static/whss/css/bootstrap.min.css">
+    <title>Warehouse</title>
+    {% load static %}
+        <link rel="stylesheet" type="text/css" href="{% static "css/bootstrap.min.css" %}">
 </head>
 <body>
     <header class="container center-align">
@@ -13,7 +12,10 @@
     </header>
 
     <div class="container">
+        {% block content %}
+        {% endblock %}
         <br>
+        <!--suppress HtmlUnknownTarget -->
         <a class="btn" href="/admin">Admin Login</a>
     </div>
 </body>
