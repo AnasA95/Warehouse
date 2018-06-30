@@ -212,206 +212,6 @@ def user_detail(request, pk):
 
 
 @csrf_exempt
-def package_list(request):
-    if request.method == 'GET':
-        packages = Package.objects.all()
-        serializer = PackageSerializer(packages, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = PackageSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-
-
-@csrf_exempt
-def package_detail(request, pk):
-    try:
-        package = Package.objects.get(pk=pk)
-    except Package.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = PackageSerializer(package)
-        return JsonResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = PackageSerializer(package, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        package.delete()
-        return HttpResponse(status=204)
-
-
-@csrf_exempt
-def incoming_package_list(request):
-    if request.method == 'GET':
-        incoming_packages = IncomingPackage.objects.all()
-        serializer = IncomingPackageSerializer(incoming_packages, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = IncomingPackageSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-
-
-@csrf_exempt
-def incoming_package_detail(request, pk):
-    try:
-        incoming_package = IncomingPackage.objects.get(pk=pk)
-    except IncomingPackage.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = IncomingPackageSerializer(incoming_package)
-        return JsonResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = IncomingPackageSerializer(incoming_package, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        incoming_package.delete()
-        return HttpResponse(status=204)
-
-
-@csrf_exempt
-def outgoing_package_list(request):
-    if request.method == 'GET':
-        outgoing_packages = OutgoingPackage.objects.all()
-        serializer = OutgoingPackageSerializer(outgoing_packages, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = OutgoingPackageSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-
-
-@csrf_exempt
-def outgoing_package_detail(request, pk):
-    try:
-        outgoing_package = OutgoingPackage.objects.get(pk=pk)
-    except OutgoingPackage.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = OutgoingPackageSerializer(outgoing_package)
-        return JsonResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = OutgoingPackageSerializer(outgoing_package, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        outgoing_package.delete()
-        return HttpResponse(status=204)
-
-
-@csrf_exempt
-def provider_list(request):
-    if request.method == 'GET':
-        providers = Provider.objects.all()
-        serializer = ProviderSerializer(providers, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ProviderSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-
-
-@csrf_exempt
-def provider_detail(request, pk):
-    try:
-        provider = Provider.objects.get(pk=pk)
-    except Provider.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = ProviderSerializer(provider)
-        return JsonResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ProviderSerializer(provider, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        provider.delete()
-        return HttpResponse(status=204)
-
-
-@csrf_exempt
-def order_list(request):
-    if request.method == 'GET':
-        orders = Order.objects.all()
-        serializer = OrderSerializer(orders, many=True)
-        return JsonResponse(serializer.data, safe=False)
-
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = OrderSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
-
-
-@csrf_exempt
-def order_detail(request, pk):
-    try:
-        order = Order.objects.get(pk=pk)
-    except Order.DoesNotExist:
-        return HttpResponse(status=404)
-
-    if request.method == 'GET':
-        serializer = OrderSerializer(order)
-        return JsonResponse(serializer.data)
-
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = OrderSerializer(order, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-
-    elif request.method == 'DELETE':
-        order.delete()
-        return HttpResponse(status=204)
-
-
-@csrf_exempt
 def owner_list(request):
     if request.method == 'GET':
         owners = Owner.objects.all()
@@ -492,6 +292,46 @@ def customer_detail(request, pk):
 
 
 @csrf_exempt
+def provider_list(request):
+    if request.method == 'GET':
+        providers = Provider.objects.all()
+        serializer = ProviderSerializer(providers, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ProviderSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def provider_detail(request, pk):
+    try:
+        provider = Provider.objects.get(pk=pk)
+    except Provider.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = ProviderSerializer(provider)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = ProviderSerializer(provider, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        provider.delete()
+        return HttpResponse(status=204)
+
+
+@csrf_exempt
 def incoming_order_list(request):
     if request.method == 'GET':
         incoming_orders = IncomingOrder.objects.all()
@@ -568,4 +408,124 @@ def outgoing_order_detail(request, pk):
 
     elif request.method == 'DELETE':
         outgoing_order.delete()
+        return HttpResponse(status=204)
+
+
+@csrf_exempt
+def package_list(request):
+    if request.method == 'GET':
+        packages = Package.objects.all()
+        serializer = PackageSerializer(packages, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = PackageSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def package_detail(request, pk):
+    try:
+        package = Package.objects.get(pk=pk)
+    except Package.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = PackageSerializer(package)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = PackageSerializer(package, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        package.delete()
+        return HttpResponse(status=204)
+
+
+@csrf_exempt
+def box_list(request):
+    if request.method == 'GET':
+        boxes = Box.objects.all()
+        serializer = BoxSerializer(boxes, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = BoxSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def box_detail(request, pk):
+    try:
+        box = Box.objects.get(pk=pk)
+    except Box.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = BoxSerializer(box)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = BoxSerializer(box, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        box.delete()
+        return HttpResponse(status=204)
+
+
+@csrf_exempt
+def item_list(request):
+    if request.method == 'GET':
+        items = Item.objects.all()
+        serializer = ItemSerializer(items, many=True)
+        return JsonResponse(serializer.data, safe=False)
+
+    elif request.method == 'POST':
+        data = JSONParser().parse(request)
+        serializer = ItemSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data, status=201)
+        return JsonResponse(serializer.errors, status=400)
+
+
+@csrf_exempt
+def item_detail(request, pk):
+    try:
+        item = Item.objects.get(pk=pk)
+    except Item.DoesNotExist:
+        return HttpResponse(status=404)
+
+    if request.method == 'GET':
+        serializer = ItemSerializer(item)
+        return JsonResponse(serializer.data)
+
+    elif request.method == 'PUT':
+        data = JSONParser().parse(request)
+        serializer = ItemSerializer(item, data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return JsonResponse(serializer.data)
+        return JsonResponse(serializer.errors, status=400)
+
+    elif request.method == 'DELETE':
+        item.delete()
         return HttpResponse(status=204)

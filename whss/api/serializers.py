@@ -51,70 +51,6 @@ class UserSerializer(serializers.ModelSerializer):
             return value"""
 
 
-class PackageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Package
-        fields = [
-            'pk',
-            'created',
-            'last_modified',
-            # 'user',
-            'type',
-            'wantedWarehouseType',
-            'isFragile',
-            'warehouseId',
-        ]
-        read_only_fields = ['created', 'last_modified', 'pk']
-
-
-class IncomingPackageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = IncomingPackage
-        fields = [
-            'pk',
-            'checkInTime',
-            'userId',
-        ]
-        read_only_fields = ['pk']
-
-
-class OutgoingPackageSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OutgoingPackage
-        fields = [
-            'pk',
-            'checkOutTime',
-            'userId',
-        ]
-        read_only_fields = ['pk']
-
-
-class ProviderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Provider
-        fields = [
-            'pk',
-            'created',
-            'last_modified',
-            'name',
-        ]
-        read_only_fields = ['created', 'last_modified', 'pk']
-
-
-class OrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Order
-        fields = [
-            'pk',
-            'created',
-            'last_modified',
-            # 'user',
-            'providerId',
-            'packageId',
-        ]
-        read_only_fields = ['created', 'last_modified', 'pk']
-
-
 class OwnerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Owner
@@ -141,15 +77,31 @@ class CustomerSerializer(serializers.ModelSerializer):
         read_only_fields = ['created', 'last_modified', 'pk']
 
 
+class ProviderSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Provider
+        fields = [
+            'pk',
+            'created',
+            'last_modified',
+            'name',
+        ]
+        read_only_fields = ['created', 'last_modified', 'pk']
+
+
 class IncomingOrderSerializer(serializers.ModelSerializer):
     class Meta:
         model = IncomingOrder
         fields = [
             'pk',
+            'created',
+            'last_modified',
+            'providerId',
+            'packageId',
             'pkgQty',
             'ownerId',
         ]
-        read_only_fields = ['pk']
+        read_only_fields = ['created', 'last_modified', 'pk']
 
 
 class OutgoingOrderSerializer(serializers.ModelSerializer):
@@ -157,7 +109,59 @@ class OutgoingOrderSerializer(serializers.ModelSerializer):
         model = OutgoingOrder
         fields = [
             'pk',
+            'created',
+            'last_modified',
+            'providerId',
+            'packageId',
             'pkgQty',
             'customerId',
         ]
-        read_only_fields = ['pk']
+        read_only_fields = ['created', 'last_modified', 'pk']
+
+
+class PackageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package
+        fields = [
+            'pk',
+            'created',
+            'last_modified',
+            # 'user',
+            'type',
+            'isFragile',
+            'warehouseId',
+            'isChecked',
+            'orderId',
+        ]
+        read_only_fields = ['created', 'last_modified', 'pk']
+
+
+class BoxSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package
+        fields = [
+            'pk',
+            'created',
+            'last_modified',
+            'packageId',
+        ]
+        read_only_fields = ['created', 'last_modified', 'pk']
+
+
+class ItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Package
+        fields = [
+            'pk',
+            'created',
+            'last_modified',
+            'name',
+            'qty',
+            'price',
+            'isExist',
+            'isChecked',
+            'boxId',
+            'orderId',
+        ]
+        read_only_fields = ['created', 'last_modified', 'pk']
+
