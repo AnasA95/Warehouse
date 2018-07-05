@@ -1,13 +1,8 @@
-from django.db.models import Q
-from rest_framework import generics, mixins
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 from whss.models import *
-from .permissions import IsOwnerOrReadOnly
-
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.renderers import JSONRenderer
-from rest_framework.parsers import JSONParser
-from .serializers import *
+from whss.api.serializers import *
 """
 class UserAPIView(mixins.CreateModelMixin, generics.ListAPIView):
     lookup_field = 'pk'
@@ -91,441 +86,419 @@ class OrderRudAPIView(generics.RetrieveUpdateDestroyAPIView):
 """
 
 
-@csrf_exempt
-def warehouse_type_list(request):
+@api_view(['GET', 'POST'])
+def warehouse_type_list(request, format=None):
     if request.method == 'GET':
         warehouse_types = WarehouseType.objects.all()
         serializer = WarehouseTypeSerializer(warehouse_types, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = WarehouseTypeSerializer(data=data)
+        serializer = WarehouseTypeSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def warehouse_type_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def warehouse_type_detail(request, pk, format=None):
     try:
         warehouse_type = WarehouseType.objects.get(pk=pk)
     except WarehouseType.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = WarehouseTypeSerializer(warehouse_type)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = WarehouseTypeSerializer(warehouse_type, data=data)
+        serializer = WarehouseTypeSerializer(warehouse_type, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         warehouse_type.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def warehouse_list(request):
+@api_view(['GET', 'POST'])
+def warehouse_list(request, format=None):
     if request.method == 'GET':
         warehouses = Warehouse.objects.all()
         serializer = WarehouseSerializer(warehouses, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = WarehouseSerializer(data=data)
+        serializer = WarehouseSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def warehouse_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def warehouse_detail(request, pk, format=None):
     try:
         warehouse = Warehouse.objects.get(pk=pk)
     except Warehouse.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = WarehouseSerializer(warehouse)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = WarehouseSerializer(warehouse, data=data)
+        serializer = WarehouseSerializer(warehouse, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         warehouse.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def user_list(request):
+@api_view(['GET', 'POST'])
+def user_list(request, format=None):
     if request.method == 'GET':
         users = User.objects.all()
         serializer = UserSerializer(users, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = UserSerializer(data=data)
+        serializer = UserSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def user_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def user_detail(request, pk, format=None):
     try:
         user = User.objects.get(pk=pk)
     except User.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = UserSerializer(user)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = UserSerializer(user, data=data)
+        serializer = UserSerializer(user, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         user.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def owner_list(request):
+@api_view(['GET', 'POST'])
+def owner_list(request, format=None):
     if request.method == 'GET':
         owners = Owner.objects.all()
         serializer = OwnerSerializer(owners, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = OwnerSerializer(data=data)
+        serializer = OwnerSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def owner_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def owner_detail(request, pk, format=None):
     try:
         owner = Owner.objects.get(pk=pk)
     except Owner.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = OwnerSerializer(owner)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = OwnerSerializer(owner, data=data)
+        serializer = OwnerSerializer(owner, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         owner.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def customer_list(request):
+@api_view(['GET', 'POST'])
+def customer_list(request, format=None):
     if request.method == 'GET':
         customers = Customer.objects.all()
         serializer = CustomerSerializer(customers, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = CustomerSerializer(data=data)
+        serializer = CustomerSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def customer_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def customer_detail(request, pk, format=None):
     try:
         customer = Customer.objects.get(pk=pk)
     except Customer.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = CustomerSerializer(customer)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = CustomerSerializer(customer, data=data)
+        serializer = CustomerSerializer(customer, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         customer.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def provider_list(request):
+@api_view(['GET', 'POST'])
+def provider_list(request, format=None):
     if request.method == 'GET':
         providers = Provider.objects.all()
         serializer = ProviderSerializer(providers, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ProviderSerializer(data=data)
+        serializer = ProviderSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def provider_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def provider_detail(request, pk, format=None):
     try:
         provider = Provider.objects.get(pk=pk)
     except Provider.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = ProviderSerializer(provider)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ProviderSerializer(provider, data=data)
+        serializer = ProviderSerializer(provider, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         provider.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def incoming_order_list(request):
+@api_view(['GET', 'POST'])
+def incoming_order_list(request, format=None):
     if request.method == 'GET':
         incoming_orders = IncomingOrder.objects.all()
         serializer = IncomingOrderSerializer(incoming_orders, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = IncomingOrderSerializer(data=data)
+        serializer = IncomingOrderSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def incoming_order_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def incoming_order_detail(request, pk, format=None):
     try:
         incoming_order = IncomingOrder.objects.get(pk=pk)
     except IncomingOrder.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = IncomingOrderSerializer(incoming_order)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = IncomingOrderSerializer(incoming_order, data=data)
+        serializer = IncomingOrderSerializer(incoming_order, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         incoming_order.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def outgoing_order_list(request):
+@api_view(['GET', 'POST'])
+def outgoing_order_list(request, format=None):
     if request.method == 'GET':
         outgoing_orders = OutgoingOrder.objects.all()
         serializer = OutgoingOrderSerializer(outgoing_orders, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = OutgoingOrderSerializer(data=data)
+        serializer = OutgoingOrderSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def outgoing_order_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def outgoing_order_detail(request, pk, format=None):
     try:
         outgoing_order = OutgoingOrder.objects.get(pk=pk)
     except OutgoingOrder.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = OutgoingOrderSerializer(outgoing_order)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = OutgoingOrderSerializer(outgoing_order, data=data)
+        serializer = OutgoingOrderSerializer(outgoing_order, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         outgoing_order.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def package_list(request):
+@api_view(['GET', 'POST'])
+def package_list(request, format=None):
     if request.method == 'GET':
         packages = Package.objects.all()
         serializer = PackageSerializer(packages, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = PackageSerializer(data=data)
+        serializer = PackageSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def package_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def package_detail(request, pk, format=None):
     try:
         package = Package.objects.get(pk=pk)
     except Package.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = PackageSerializer(package)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = PackageSerializer(package, data=data)
+        serializer = PackageSerializer(package, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         package.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def box_list(request):
+@api_view(['GET', 'POST'])
+def box_list(request, format=None):
     if request.method == 'GET':
         boxes = Box.objects.all()
         serializer = BoxSerializer(boxes, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = BoxSerializer(data=data)
+        serializer = BoxSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def box_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def box_detail(request, pk, format=None):
     try:
         box = Box.objects.get(pk=pk)
     except Box.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = BoxSerializer(box)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = BoxSerializer(box, data=data)
+        serializer = BoxSerializer(box, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         box.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
-@csrf_exempt
-def item_list(request):
+@api_view(['GET', 'POST'])
+def item_list(request, format=None):
     if request.method == 'GET':
         items = Item.objects.all()
         serializer = ItemSerializer(items, many=True)
-        return JsonResponse(serializer.data, safe=False)
+        return Response(serializer.data)
 
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = ItemSerializer(data=data)
+        serializer = ItemSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-@csrf_exempt
-def item_detail(request, pk):
+@api_view(['GET', 'PUT', 'DELETE'])
+def item_detail(request, pk, format=None):
     try:
         item = Item.objects.get(pk=pk)
     except Item.DoesNotExist:
-        return HttpResponse(status=404)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = ItemSerializer(item)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = ItemSerializer(item, data=data)
+        serializer = ItemSerializer(item, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         item.delete()
-        return HttpResponse(status=204)
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -1,4 +1,3 @@
-from django.conf import settings
 from django.db import models
 from django.contrib.auth.hashers import make_password
 from django.utils import timezone
@@ -24,7 +23,7 @@ class WarehouseType(models.Model):
 class Warehouse(models.Model):
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
     name = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
     type = models.ForeignKey(WarehouseType, on_delete=models.CASCADE)
@@ -124,12 +123,13 @@ class Provider(models.Model):
 class Order(models.Model):
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     providerId = models.ForeignKey(Provider, on_delete=models.CASCADE)
     status = models.BooleanField(default=False)
     checkTime = models.DateTimeField(blank=True, null=True)
     userId = models.ForeignKey(User, on_delete=models.CASCADE)
+    warehouseId = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
 
     class Meta:
         abstract = True
@@ -147,12 +147,6 @@ class IncomingOrder(Order):
     def __str__(self):
         return str(self.pk)
 
-    """def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()
-        self.last_modified = timezone.now()
-        return super(IncomingOrder, self).save(*args, **kwargs)"""
-
 
 class OutgoingOrder(Order):
     customerId = models.ForeignKey(Customer, on_delete=models.CASCADE)
@@ -160,19 +154,15 @@ class OutgoingOrder(Order):
     def __str__(self):
         return str(self.pk)
 
-    """def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()
-        self.last_modified = timezone.now()
-        return super(OutgoingOrder, self).save(*args, **kwargs)"""
-
 
 class Package(models.Model):
+    WAREHOUSE_CHOICES = WarehouseType.objects.all()
+
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
     last_modified = models.DateTimeField(null=True, blank=True)
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    type = models.CharField(max_length=30)
+    type = models.ForeignKey(WAREHOUSE_CHOICES, on_delete=models.CASCADE)
     isFragile = models.BooleanField(default=False)
     warehouseId = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     isChecked = models.BooleanField()
