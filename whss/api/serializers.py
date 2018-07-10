@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from whss.models import *
+from .models import *
 
 
 class WarehouseTypeSerializer(serializers.ModelSerializer):

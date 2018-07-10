@@ -162,7 +162,7 @@ class Package(models.Model):
     created = models.DateTimeField(editable=False, null=True, blank=True)
     last_modified = models.DateTimeField(null=True, blank=True)
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    type = models.ForeignKey(WAREHOUSE_CHOICES, on_delete=models.CASCADE)
+    type = models.CharField(max_length=10, choices=WAREHOUSE_CHOICES)
     isFragile = models.BooleanField(default=False)
     warehouseId = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     isChecked = models.BooleanField()
