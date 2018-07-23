@@ -97,36 +97,6 @@ class ProviderSerializer(serializers.ModelSerializer):
         read_only_fields = ['created', 'last_modified', 'pk']
 
 
-class IncomingOrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = IncomingOrder
-        fields = [
-            'pk',
-            'created',
-            'last_modified',
-            'providerId',
-            'packageId',
-            'pkgQty',
-            'ownerId',
-        ]
-        read_only_fields = ['created', 'last_modified', 'pk']
-
-
-class OutgoingOrderSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = OutgoingOrder
-        fields = [
-            'pk',
-            'created',
-            'last_modified',
-            'providerId',
-            'packageId',
-            'pkgQty',
-            'customerId',
-        ]
-        read_only_fields = ['created', 'last_modified', 'pk']
-
-
 class PackageSerializer(serializers.ModelSerializer):
     class Meta:
         model = Package
@@ -144,21 +114,25 @@ class PackageSerializer(serializers.ModelSerializer):
         read_only_fields = ['created', 'last_modified', 'pk']
 
 
-class BoxSerializer(serializers.ModelSerializer):
+class IncomingOrderSerializer(serializers.ModelSerializer):
+    packages = PackageSerializer(many=True)
+
     class Meta:
-        model = Package
+        model = IncomingOrder
         fields = [
             'pk',
             'created',
             'last_modified',
-            'packageId',
+            'providerId',
+            'ownerId',
+            'packages'
         ]
         read_only_fields = ['created', 'last_modified', 'pk']
 
 
 class ItemSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Package
+        model = Item
         fields = [
             'pk',
             'created',
@@ -172,3 +146,32 @@ class ItemSerializer(serializers.ModelSerializer):
             'orderId',
         ]
         read_only_fields = ['created', 'last_modified', 'pk']
+
+
+class OutgoingOrderSerializer(serializers.ModelSerializer):
+    items = ItemSerializer(many=True)
+
+    class Meta:
+        model = OutgoingOrder
+        fields = [
+            'pk',
+            'created',
+            'last_modified',
+            'providerId',
+            'customerId',
+            'items'
+        ]
+        read_only_fields = ['created', 'last_modified', 'pk']
+
+
+class BoxSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Box
+        fields = [
+            'pk',
+            'created',
+            'last_modified',
+            'packageId',
+        ]
+        read_only_fields = ['created', 'last_modified', 'pk']
+

@@ -59,7 +59,7 @@ class User(AbstractUser):
 class Owner(models.Model):
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
     name = models.CharField(max_length=50)
     location = models.CharField(max_length=100)
 
@@ -76,7 +76,7 @@ class Owner(models.Model):
 class Customer(models.Model):
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
     name = models.CharField(max_length=50)
     location = models.CharField(max_length=100, default="")
 
@@ -93,7 +93,7 @@ class Customer(models.Model):
 class Provider(models.Model):
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
     name = models.CharField(max_length=50)
 
     def save(self, *args, **kwargs):
@@ -144,13 +144,13 @@ class OutgoingOrder(Order):
 class Package(models.Model):
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     type = models.ForeignKey(WarehouseType, on_delete=models.CASCADE)
     isFragile = models.BooleanField(default=False)
     warehouseId = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     isChecked = models.BooleanField()
-    orderId = models.ForeignKey(IncomingOrder, on_delete=models.CASCADE)
+    orderId = models.ForeignKey(IncomingOrder, related_name='packages', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -165,7 +165,7 @@ class Package(models.Model):
 class Box(SizeAndWeight):
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
     packageId = models.ForeignKey(Package, on_delete=models.CASCADE)
 
     class Meta:
@@ -184,14 +184,14 @@ class Box(SizeAndWeight):
 class Item(SizeAndWeight):
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
     name = models.CharField(max_length=50)
     qty = models.IntegerField(default=0)
     price = models.IntegerField()
     isExist = models.BooleanField(default=False)
     isChecked = models.BooleanField()
     boxId = models.ForeignKey(Box, on_delete=models.CASCADE)
-    orderId = models.ForeignKey(OutgoingOrder, on_delete=models.CASCADE)
+    orderId = models.ForeignKey(OutgoingOrder, related_name='items', on_delete=models.CASCADE)
 
     def save(self, *args, **kwargs):
         if not self.id:
