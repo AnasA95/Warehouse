@@ -14,8 +14,9 @@ SECRET_KEY = 'z@gvcwc2p47uv%6fb120j&1u4682vsh)loytpx+nn16*%)z7p3'
 DEBUG = True
 
 ALLOWED_HOSTS = [
-    "192.168.8.101",
-    "127.0.0.1"
+    "192.168.8.105",
+    "127.0.0.1",
+    "10.0.2.15"
 ]
 
 
@@ -117,11 +118,14 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static'), ]
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+        'rest_framework.permissions.IsAuthenticated',
     ),
     'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
-        'rest_framework.authentication.SessionAuthentication',
+        # 'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        # 'rest_framework.authentication.SessionAuthentication',
         'rest_framework.authentication.BasicAuthentication',
     ),
 }
+
+AUTH_USER_MODEL = 'whss.User'
+LOGIN_REDIRECT_URL = '/'

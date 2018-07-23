@@ -2,19 +2,22 @@ from rest_framework import serializers
 from .models import *
 
 
-class WarehouseTypeSerializer(serializers.ModelSerializer):
+class WarehouseTypeSerializer(serializers.HyperlinkedModelSerializer):
+    user = serializers.ReadOnlyField(source='user.username')
+
     class Meta:
         model = WarehouseType
         fields = [
-            'name'
+            'url',
+            'name',
+            'user'
         ]
 
 
-class WarehouseSerializer(serializers.ModelSerializer):
+class WarehouseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Warehouse
         fields = [
-            'pk',
             'created',
             'last_modified',
             'name',
@@ -23,27 +26,32 @@ class WarehouseSerializer(serializers.ModelSerializer):
             'capacity',
             'remainingCapacity'
         ]
-        read_only_fields = ['created', 'last_modified', 'pk']
+        read_only_fields = ['created', 'last_modified']
 
 
 class UserSerializer(serializers.ModelSerializer):
+    """snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
+
+    class Meta:
+        model = User
+        fields = ('id', 'username', 'snippets')"""
+
     class Meta:
         model = User
         fields = [
-            'pk',
-            # 'user',
-            'created',
-            'last_modified',
-            'fname',
-            'lname',
+            'username',
+            'email',
+            'date_joined',
+            'last_login',
+            'first_name',
+            'last_name',
             'type',
-            'warehouseId',
+            'warehouse',
             'password',
         ]
-        read_only_fields = ['created', 'last_modified', 'pk']
 
-        """def validate_fname(self, value):
-            user = User.objects.filter(fname__iexact=value)
+        """def validate_first_name(self, value):
+            user = User.objects.filter(first_name__iexact=value)
             if self.model:
                 user = user.exclude(pk=self.model.pk)
             if user.exists():
@@ -164,4 +172,3 @@ class ItemSerializer(serializers.ModelSerializer):
             'orderId',
         ]
         read_only_fields = ['created', 'last_modified', 'pk']
-

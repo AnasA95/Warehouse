@@ -1,16 +1,135 @@
-from django.shortcuts import render
-from .models import User
+from rest_framework import generics
+from .serializers import *
+from .permissions import *
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework.reverse import reverse
+# from rest_framework import renderers
 
 
-def index(request):
-    users = User.objects.all()  # [:10] first 10 users
-    context = {
-        'title': 'Warehouse System',
-        'users': users
-    }
-    return render(request, 'whss/index.html', context)
+@api_view(['GET'])
+def api_root(request, format=None):
+    return Response({
+        'users': reverse('user-list', request=request, format=format),
+        'warehousetypes': reverse('warehousetype-list', request=request, format=format)
+    })
 
 
-def details(request, id):
-    user = User.objects.get(id=id)
-    return render(request, 'whss/details.html', {'user': user})
+class WarehouseTypeList(generics.ListCreateAPIView):
+    queryset = WarehouseType.objects.all()
+    serializer_class = WarehouseTypeSerializer
+    permission_classes = (permissions.IsAuthenticated,
+                          IsOwnerOrReadOnly,)
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class WarehouseTypeDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = WarehouseType.objects.all()
+    serializer_class = WarehouseTypeSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class WarehouseList(generics.ListCreateAPIView):
+    queryset = Warehouse.objects.all()
+    serializer_class = WarehouseSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class WarehouseDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Warehouse.objects.all()
+    serializer_class = WarehouseSerializer
+    permission_classes = (permissions.IsAuthenticated,)
+
+
+class UserList(generics.ListCreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = (permissions.IsAdminUser,)
+
+
+class OwnerList(generics.ListCreateAPIView):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerSerializer
+
+
+class OwnerDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Owner.objects.all()
+    serializer_class = OwnerSerializer
+
+
+class CustomerList(generics.ListCreateAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+
+
+class CustomerDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+
+
+class ProviderList(generics.ListCreateAPIView):
+    queryset = Provider.objects.all()
+    serializer_class = ProviderSerializer
+
+
+class ProviderDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Provider.objects.all()
+    serializer_class = ProviderSerializer
+
+
+class IncomingOrderList(generics.ListCreateAPIView):
+    queryset = IncomingOrder.objects.all()
+    serializer_class = IncomingOrderSerializer
+
+
+class IncomingOrderDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = IncomingOrder.objects.all()
+    serializer_class = IncomingOrderSerializer
+
+
+class OutgoingOrderList(generics.ListCreateAPIView):
+    queryset = OutgoingOrder.objects.all()
+    serializer_class = OutgoingOrderSerializer
+
+
+class OutgoingOrderDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = OutgoingOrder.objects.all()
+    serializer_class = OutgoingOrderSerializer
+
+
+class PackageList(generics.ListCreateAPIView):
+    queryset = Package.objects.all()
+    serializer_class = PackageSerializer
+
+
+class PackageDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Package.objects.all()
+    serializer_class = PackageSerializer
+
+
+class BoxList(generics.ListCreateAPIView):
+    queryset = Box.objects.all()
+    serializer_class = BoxSerializer
+
+
+class BoxDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Box.objects.all()
+    serializer_class = BoxSerializer
+
+
+class ItemList(generics.ListCreateAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer
+
+
+class ItemDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Item.objects.all()
+    serializer_class = ItemSerializer

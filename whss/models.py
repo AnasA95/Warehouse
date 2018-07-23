@@ -1,7 +1,6 @@
-# from django.conf import settings
 from django.db import models
-from django.contrib.auth.hashers import make_password
 from django.utils import timezone
+from django.contrib.auth.models import AbstractUser
 
 
 class SizeAndWeight(models.Model):
@@ -43,28 +42,15 @@ class Warehouse(models.Model):
         return str(self.id) + ' ' + self.name
 
 
-class User(models.Model):
+class User(AbstractUser):
     USER_CHOICES = (
         ('user', 'User'),
         ('admin', 'Admin'),
         ('super_admin', 'Super Admin'),
     )
-    username = models.CharField(max_length=20, primary_key=True)
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(null=True, blank=True)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
     type = models.CharField(max_length=11, choices=USER_CHOICES, default='user')
-    warehouseId = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
-    password = models.CharField(max_length=300)
-    make_password(password)
-
-    def save(self, *args, **kwargs):
-        if not self.id:
-            self.created = timezone.now()
-        self.last_modified = timezone.now()
-        return super(User, self).save(*args, **kwargs)
+    warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, null=True, blank=True)
 
     def __str__(self):
         return self.first_name
@@ -91,8 +77,7 @@ class Customer(models.Model):
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
     last_modified = models.DateTimeField(null=True, blank=True)
-    first_name = models.CharField(max_length=20)
-    last_name = models.CharField(max_length=20)
+    name = models.CharField(max_length=50)
     location = models.CharField(max_length=100, default="")
 
     def save(self, *args, **kwargs):
@@ -102,7 +87,7 @@ class Customer(models.Model):
         return super(Customer, self).save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.pk) + ' ' + self.first_name + ' ' + self.last_name
+        return str(self.pk) + ' ' + self.name
 
 
 class Provider(models.Model):
@@ -157,13 +142,11 @@ class OutgoingOrder(Order):
 
 
 class Package(models.Model):
-    WAREHOUSE_CHOICES = WarehouseType.objects.all()
-
     id = models.IntegerField(primary_key=True)
     created = models.DateTimeField(editable=False, null=True, blank=True)
     last_modified = models.DateTimeField(null=True, blank=True)
     # user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    type = models.CharField(max_length=10, choices=WAREHOUSE_CHOICES)
+    type = models.ForeignKey(WarehouseType, on_delete=models.CASCADE)
     isFragile = models.BooleanField(default=False)
     warehouseId = models.ForeignKey(Warehouse, on_delete=models.CASCADE)
     isChecked = models.BooleanField()
