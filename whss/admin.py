@@ -21,27 +21,27 @@ class OwnerCustomerProviderAdmin(admin.ModelAdmin):
 
 
 class IncomingOrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'ownerId_name', 'status', 'userId', 'checkTime')
-    search_fields = ('id', 'ownerId_id', 'ownerId_name')
+    list_display = ('id', 'owner_name', 'status', 'userId', 'check_time')
+    search_fields = ('id', 'owner_id', 'owner_name')
     list_filter = ('created', 'last_modified', 'status')
 
-    def ownerId_name(self, obj):
-        return obj.ownerId.name
+    def owner_name(self, obj):
+        return obj.owner.name
 
-    def ownerId_id(self, obj):
-        return obj.ownerId.id
+    def owner_id(self, obj):
+        return obj.owner.id
 
 
 class OutgoingOrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'customerId_name', 'status', 'userId', 'checkTime')
-    search_fields = ('id', 'customerId_id', 'customerId_name')
+    list_display = ('id', 'customer_name', 'status', 'user', 'check_time')
+    search_fields = ('id', 'customer_id', 'customer_name')
     list_filter = ('created', 'last_modified', 'status')
 
-    def customerId_name(self, obj):
-        return obj.ownerId.name
+    def customer_name(self, obj):
+        return obj.owner.name
 
-    def customerId_id(self, obj):
-        return obj.ownerId.id
+    def customer_id(self, obj):
+        return obj.owner.id
 
 
 admin.site.register(WarehouseType, WarehouseTypeAdmin)
