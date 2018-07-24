@@ -13,17 +13,6 @@ class SizeAndWeight(models.Model):
         abstract = True
 
 
-class Info(models.Model):
-    created = models.DateTimeField(editable=False, null=True, blank=True)
-    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
-    name = models.CharField(max_length=50)
-    location = models.CharField(max_length=100)
-
-    class Meta:
-        abstract = True
-        ordering = ['created']
-
-
 class WarehouseType(models.Model):
     name = models.CharField(max_length=10)
 
@@ -31,10 +20,17 @@ class WarehouseType(models.Model):
         return self.name
 
 
-class Warehouse(Info):
+class Warehouse(models.Model):
+    created = models.DateTimeField(editable=False, null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
+    name = models.CharField(max_length=50)
     type = models.ForeignKey(WarehouseType, on_delete=models.CASCADE)
     capacity = models.IntegerField()
     remaining_capacity = models.IntegerField()
+    location = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ['created']
 
     def __str__(self):
         return str(self.id) + ' ' + self.name
@@ -55,12 +51,22 @@ class User(AbstractUser):
     type = models.CharField(max_length=11, choices=USER_CHOICES, default='user')
     warehouse = models.ForeignKey(Warehouse, on_delete=models.CASCADE, null=True, blank=True)
 
+    class Meta:
+        ordering = ['date_joined']
+
     def __str__(self):
         return self.first_name
 
 
-class Owner(Info):
+class Owner(models.Model):
     username = models.CharField(max_length=10)
+    created = models.DateTimeField(editable=False, null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
+    name = models.CharField(max_length=50)
+    location = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ['created']
 
     def __str__(self):
         return str(self.pk) + ' ' + self.name
@@ -72,8 +78,15 @@ class Owner(Info):
         return super(Owner, self).save(*args, **kwargs)
 
 
-class Customer(Info):
+class Customer(models.Model):
     username = models.CharField(max_length=10)
+    created = models.DateTimeField(editable=False, null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
+    name = models.CharField(max_length=50)
+    location = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ['created']
 
     def __str__(self):
         return str(self.pk) + ' ' + self.name
@@ -85,8 +98,14 @@ class Customer(Info):
         return super(Customer, self).save(*args, **kwargs)
 
 
-class Provider(Info):
+class Provider(models.Model):
     username = models.CharField(max_length=10)
+    created = models.DateTimeField(editable=False, null=True, blank=True)
+    last_modified = models.DateTimeField(editable=False, null=True, blank=True)
+    name = models.CharField(max_length=50)
+
+    class Meta:
+        ordering = ['created']
 
     def __str__(self):
         return str(self.pk) + ' ' + self.name
@@ -110,6 +129,7 @@ class Order(models.Model):
 
     class Meta:
         abstract = True
+        ordering = ['created']
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -142,6 +162,9 @@ class Package(models.Model):
     is_checked = models.BooleanField()
     order = models.ForeignKey(IncomingOrder, related_name='packages', on_delete=models.CASCADE)
 
+    class Meta:
+        ordering = ['created']
+
     def __str__(self):
         return str(self.pk)
 
@@ -160,6 +183,7 @@ class Box(SizeAndWeight):
 
     class Meta:
         verbose_name_plural = 'Boxes'
+        ordering = ['created']
 
     def __str__(self):
         return str(self.pk)
@@ -182,6 +206,9 @@ class Item(SizeAndWeight):
     is_checked = models.BooleanField()
     box = models.ForeignKey(Box, on_delete=models.CASCADE)
     order = models.ForeignKey(OutgoingOrder, related_name='items', on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['created']
 
     def __str__(self):
         return self.name
