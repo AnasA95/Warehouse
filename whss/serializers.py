@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import *
 
 
-class WarehouseTypeSerializer(serializers.HyperlinkedModelSerializer):
+class WarehouseTypeSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = WarehouseType
@@ -10,9 +10,10 @@ class WarehouseTypeSerializer(serializers.HyperlinkedModelSerializer):
             'pk',
             'name',
         ]
+        read_only_fields = ['pk']
 
 
-class WarehouseSerializer(serializers.HyperlinkedModelSerializer):
+class WarehouseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Warehouse
