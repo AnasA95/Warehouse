@@ -10,8 +10,8 @@ from rest_framework.reverse import reverse
 @api_view(['GET'])
 def api_root(request, format=None):
     return Response({
-        'warehousetypes': reverse('warehousetype-list', request=request, format=format)
-        'warehouses': reverse('warehouse-list', request=request, format=format)
+        'warehousetypes': reverse('warehousetype-list', request=request, format=format),
+        'warehouses': reverse('warehouse-list', request=request, format=format),
         'users': reverse('user-list', request=request, format=format),
         'owners': reverse('owner-list', request=request, format=format),
         'customers': reverse('customer-list', request=request, format=format),
