@@ -21,7 +21,7 @@ class OwnerCustomerProviderAdmin(admin.ModelAdmin):
 
 
 class IncomingOrderAdmin(admin.ModelAdmin):
-    list_display = ('id', 'owner_name', 'status', 'userId', 'check_time')
+    list_display = ('id', 'owner_name', 'status', 'user', 'check_time')
     search_fields = ('id', 'owner_id', 'owner_name')
     list_filter = ('created', 'last_modified', 'status')
 
