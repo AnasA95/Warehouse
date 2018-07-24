@@ -3,42 +3,38 @@ from .models import *
 
 
 class WarehouseTypeSerializer(serializers.HyperlinkedModelSerializer):
-    user = serializers.ReadOnlyField(source='user.username')
 
     class Meta:
         model = WarehouseType
         fields = [
-            'url',
+            'pk',
             'name',
-            'user'
         ]
 
 
 class WarehouseSerializer(serializers.HyperlinkedModelSerializer):
+
     class Meta:
         model = Warehouse
         fields = [
+            'pk',
             'created',
             'last_modified',
             'name',
             'location',
             'type',
             'capacity',
-            'remainingCapacity'
+            'remaining_capacity'
         ]
-        read_only_fields = ['created', 'last_modified']
+        read_only_fields = ['created', 'last_modified', 'pk']
 
 
 class UserSerializer(serializers.ModelSerializer):
-    """snippets = serializers.PrimaryKeyRelatedField(many=True, queryset=Snippet.objects.all())
-
-    class Meta:
-        model = User
-        fields = ('id', 'username', 'snippets')"""
 
     class Meta:
         model = User
         fields = [
+            'pk',
             'username',
             'email',
             'date_joined',
@@ -49,14 +45,7 @@ class UserSerializer(serializers.ModelSerializer):
             'warehouse',
             'password',
         ]
-
-        """def validate_first_name(self, value):
-            user = User.objects.filter(first_name__iexact=value)
-            if self.model:
-                user = user.exclude(pk=self.model.pk)
-            if user.exists():
-                raise serializers.ValidationError(str(self.read_only_fields) + "field must be unique")
-            return value"""
+        read_only_fields = ['date_joined', 'last_login', 'pk']
 
 
 class OwnerSerializer(serializers.ModelSerializer):
@@ -64,6 +53,7 @@ class OwnerSerializer(serializers.ModelSerializer):
         model = Owner
         fields = [
             'pk',
+            'username',
             'created',
             'last_modified',
             'name'
@@ -77,6 +67,7 @@ class CustomerSerializer(serializers.ModelSerializer):
         model = Customer
         fields = [
             'pk',
+            'username',
             'created',
             'last_modified',
             'name'
@@ -90,6 +81,7 @@ class ProviderSerializer(serializers.ModelSerializer):
         model = Provider
         fields = [
             'pk',
+            'username',
             'created',
             'last_modified',
             'name',
@@ -102,14 +94,14 @@ class PackageSerializer(serializers.ModelSerializer):
         model = Package
         fields = [
             'pk',
+            'tracking_number',
             'created',
             'last_modified',
-            # 'user',
             'type',
-            'isFragile',
-            'warehouseId',
-            'isChecked',
-            'orderId',
+            'is_fragile',
+            'warehouse',
+            'is_checked',
+            'order',
         ]
         read_only_fields = ['created', 'last_modified', 'pk']
 
@@ -121,6 +113,7 @@ class IncomingOrderSerializer(serializers.ModelSerializer):
         model = IncomingOrder
         fields = [
             'pk',
+            'tracking_number',
             'created',
             'last_modified',
             'providerId',
@@ -131,10 +124,12 @@ class IncomingOrderSerializer(serializers.ModelSerializer):
 
 
 class ItemSerializer(serializers.ModelSerializer):
+
     class Meta:
         model = Item
         fields = [
             'pk',
+            'tracking_number',
             'created',
             'last_modified',
             'name',
@@ -155,6 +150,7 @@ class OutgoingOrderSerializer(serializers.ModelSerializer):
         model = OutgoingOrder
         fields = [
             'pk',
+            'tracking_number',
             'created',
             'last_modified',
             'providerId',
@@ -169,6 +165,7 @@ class BoxSerializer(serializers.ModelSerializer):
         model = Box
         fields = [
             'pk',
+            'tracking_number',
             'created',
             'last_modified',
             'packageId',
